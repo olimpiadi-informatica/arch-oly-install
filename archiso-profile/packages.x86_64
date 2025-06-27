@@ -1,8 +1,10 @@
 arch-install-scripts
 base
+dosfstools
 linux
 mkinitcpio
 mkinitcpio-archiso
+reflector
 openssh
 vim
 

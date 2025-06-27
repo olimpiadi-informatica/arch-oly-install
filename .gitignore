@@ -1,2 +1,5 @@
 work
 out
+archiso-profile/airootfs/install/scripts
+archiso-profile/airootfs/install/additional_user_files
+prepare/target
