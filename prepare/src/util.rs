@@ -1,0 +1,41 @@
+use color_eyre::eyre::Result;
+
+use std::{
+    fs::{File, create_dir_all},
+    io::Write,
+    path::Path,
+};
+
+fn add_script(dir: &Path, name: &str, contents: &str) -> Result<()> {
+    create_dir_all(&dir)?;
+    let mut f = File::create(dir.join(name))?;
+    writeln!(f, "set -e")?;
+    writeln!(f, "{}", contents)?;
+    Ok(())
+}
+
+pub fn iso_root() -> &'static Path {
+    Path::new("archiso-profile/airootfs")
+}
+
+pub fn add_pre_script(name: &str, contents: &str) -> Result<()> {
+    add_script(&iso_root().join("pre_install"), name, contents)
+}
+
+pub fn add_post_script(name: &str, contents: &str) -> Result<()> {
+    add_script(&iso_root().join("install/scripts"), name, contents)
+}
+
+macro_rules! script {
+    (internal $fun: path | $name: literal, $tpl: literal) => {
+        $fun($name, &format!($tpl))?;
+    };
+    (pre $name: literal, $tpl: literal) => {
+        crate::util::script!(internal crate::util::add_pre_script | $name, $tpl)
+    };
+    ($name: literal, $tpl: literal) => {
+        crate::util::script!(internal crate::util::add_post_script | $name, $tpl)
+    };
+}
+
+pub(crate) use script;
