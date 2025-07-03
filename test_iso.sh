@@ -19,7 +19,7 @@ cp -a -- '/usr/share/edk2/x64/OVMF_VARS.4m.fd' "${working_dir}/"
 dd if=/dev/zero of=${working_dir}/disk.img bs=1M count=0 seek=102400 &> /dev/null
 
 ISO=$(ls out/arch-* | head -n1)
-qemu-system-x86_64 -m 4G \
+qemu-system-x86_64 -m 4G -smp $(nproc) \
   -drive "if=pflash,format=raw,unit=0,file=/usr/share/edk2/x64/OVMF_CODE.4m.fd,read-only=on" \
   -drive "if=pflash,format=raw,unit=1,file=${working_dir}/OVMF_VARS.4m.fd" \
   -global "driver=cfi.pflash01,property=secure,value=off" \

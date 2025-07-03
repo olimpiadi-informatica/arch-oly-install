@@ -21,6 +21,8 @@ locale-gen
 echo LANG={locale}.UTF-8 > /etc/locale.conf"#
     );
 
+    script!("00-less", "pacman -S --noconfirm less");
+
     script!(
         "90-networkd",
         r#"
@@ -28,16 +30,19 @@ systemctl enable systemd-networkd
 echo -e "[Match]\nName=en*\nName=eth*\n[Network]\nDHCP=yes" >> /etc/systemd/network/20-ethernet.network
 "#
     );
+    script!("90-resolved", "systemctl enable systemd-resolved");
 
-    script!("98-mkinitcpio", "mkinitcpio -P linux");
+    script!("97-mkinitcpio", "mkinitcpio -P linux");
     script!(
-        "99-grub",
+        "98-grub",
         r#"
 pacman -S --noconfirm grub efibootmgr
 grub-install --target=x86_64-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
 "#
     );
+
+    script!("99-clean-cache", "yes | pacman -Scc");
 
     Ok(())
 }

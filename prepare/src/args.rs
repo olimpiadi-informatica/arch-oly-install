@@ -38,4 +38,7 @@ pub struct Args {
     /// YYYY/MM/DD
     #[clap(long)]
     pub pin_packages: Option<String>,
+
+    #[clap(long)]
+    pub homepage: Option<String>,
 }

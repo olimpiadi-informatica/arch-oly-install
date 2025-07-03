@@ -39,3 +39,25 @@ macro_rules! script {
 }
 
 pub(crate) use script;
+
+pub fn ensure_paru() -> Result<()> {
+    script!(
+        "00-paru",
+        r#"
+set -x
+pacman -S --noconfirm --needed base-devel git sudo
+useradd -m paruuser
+passwd -l paruuser
+echo "paruuser ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/paruuser
+TMP=$(mktemp -d /tmp/tmp.XXXXXXXX)
+chown paruuser:paruuser $TMP
+pushd $TMP
+sudo -u paruuser git clone https://aur.archlinux.org/paru-bin.git
+popd
+pushd $TMP/paru-bin
+sudo -u paruuser makepkg -si --noconfirm
+popd
+"#
+    );
+    Ok(())
+}
