@@ -19,7 +19,11 @@ pub fn debuggers() -> Result<()> {
 }
 
 pub fn browser(args: &Args) -> Result<()> {
-    let Args { homepage, .. } = args;
+    let Args {
+        homepage,
+        contestant_account,
+        ..
+    } = args;
     let set_homepage = if let Some(home) = homepage {
         format!(r#"lockPref("browser.startup.homepage", "{home}");"#)
     } else {
@@ -43,6 +47,7 @@ lockPref("browser.startup.homepage_override.mstone", "ignore");
 lockPref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);
 {set_homepage}
 EOF
+sudo -u {contestant_account} cp /usr/share/applications/firefox.desktop ~{contestant_account}/Desktop
 "#
     );
 
@@ -56,7 +61,16 @@ pub fn editors(args: &Args) -> Result<()> {
     ensure_paru()?;
     script!(
         "86-editors",
-        "pacman -S --noconfirm emacs geany gedit gvim neovim kate kdevelop nano pycharm-community-edition"
+        "pacman -S --noconfirm emacs geany gedit gvim neovim kate kdevelop nano"
+    );
+
+    script!(
+        "86-pycharm",
+        // TODO(veluca): configure this.
+        r#"
+pacman -S --noconfirm pycharm-community-edition
+sudo -u {contestant_account} cp /usr/share/applications/pycharm.desktop ~{contestant_account}/Desktop
+"#
     );
     script!(
         "86-vscode",
@@ -71,6 +85,7 @@ sudo -u {contestant_account} sqlite3 ~{contestant_account}/.config/Code/User/glo
 CREATE TABLE IF NOT EXISTS ItemTable (key TEXT UNIQUE ON CONFLICT REPLACE, value BLOB);
 INSERT INTO ItemTable VALUES('extensionsIdentifiers/disabled', '[{{"id":"vscodevim.vim","uuid":"d96e79c6-8b25-4be3-8545-0e0ecefcae03"}}]');
 EOF
+sudo -u {contestant_account} cp /usr/share/applications/code.desktop ~{contestant_account}/Desktop
 "#
     );
     script!(

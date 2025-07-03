@@ -21,7 +21,10 @@ locale-gen
 echo LANG={locale}.UTF-8 > /etc/locale.conf"#
     );
 
-    script!("00-less", "pacman -S --noconfirm less");
+    script!(
+        "00-misc",
+        "pacman -S --noconfirm less bash-completion screen tmux nano"
+    );
 
     script!(
         "90-networkd",
