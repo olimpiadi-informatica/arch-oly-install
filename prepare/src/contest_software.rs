@@ -56,7 +56,10 @@ sudo -u {contestant_account} cp /usr/share/applications/firefox.desktop ~{contes
 
 pub fn editors(args: &Args) -> Result<()> {
     let Args {
-        contestant_account, ..
+        pycharm,
+        codeblocks,
+        contestant_account,
+        ..
     } = args;
     ensure_paru()?;
     script!(
@@ -64,14 +67,19 @@ pub fn editors(args: &Args) -> Result<()> {
         "pacman -S --noconfirm emacs geany gedit gvim neovim kate kdevelop nano"
     );
 
-    script!(
-        "86-pycharm",
-        // TODO(veluca): configure this.
-        r#"
+    if *pycharm {
+        script!(
+            "86-pycharm",
+            r#"
 pacman -S --noconfirm pycharm-community-edition
-sudo -u {contestant_account} cp /usr/share/applications/pycharm.desktop ~{contestant_account}/Desktop
 "#
-    );
+        );
+    }
+
+    if *codeblocks {
+        script!("86-codeblocks", "pacman -S --noconfirm codeblocks xterm");
+    }
+
     script!(
         "86-vscode",
         r#"

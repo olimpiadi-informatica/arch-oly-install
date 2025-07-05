@@ -41,4 +41,10 @@ pub struct Args {
 
     #[clap(long)]
     pub homepage: Option<String>,
+
+    #[clap(long, default_value_t = false)]
+    pub pycharm: bool,
+
+    #[clap(long, default_value_t = false)]
+    pub codeblocks: bool,
 }

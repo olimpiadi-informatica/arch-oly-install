@@ -32,15 +32,35 @@ pacman -S --noconfirm gnome gdm gnome-terminal gnome-shell-extension-desktop-ico
 pacman -R --noconfirm gnome-tour
 systemctl enable gdm
 echo -e "[daemon]\nAutomaticLoginEnable=True\nAutomaticLogin={contestant_account}{gdm_wayland}" > /etc/gdm/custom.conf
-sudo -u {contestant_account} mkdir -p ~{contestant_account}/Desktop
-sudo -u {contestant_account} -g {contestant_account} dbus-launch gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type nothing
-sudo -u {contestant_account} -g {contestant_account} dbus-launch gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
-sudo -u {contestant_account} -g {contestant_account} dbus-launch gsettings set org.gnome.settings-daemon.plugins.power power-button-action nothing
-sudo -u {contestant_account} -g {contestant_account} dbus-launch gsettings set org.gnome.desktop.lockdown disable-lock-screen true
-sudo -u {contestant_account} -g {contestant_account} dbus-launch gsettings set org.gnome.desktop.interface clock-format 24h
-sudo -u {contestant_account} -g {contestant_account} dbus-launch gsettings set org.gnome.desktop.wm.preferences button-layout appmenu:minimize,maximize,close
-sudo -u {contestant_account} -g {contestant_account} dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
-sudo -u {contestant_account} -g {contestant_account} dbus-launch gnome-extensions enable ding@rastersoft.com
+sudo -u {contestant_account} -g {contestant_account} dbus-launch bash << EOF
+set -xe
+
+mkdir -p ~{contestant_account}/Desktop
+
+# No dynamic workspaces
+gsettings set org.gnome.mutter dynamic-workspaces false
+gsettings set org.gnome.desktop.wm.preferences num-workspaces 4
+
+# Power settings
+gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type nothing
+gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
+gsettings set org.gnome.settings-daemon.plugins.power power-button-action nothing
+gsettings set org.gnome.desktop.lockdown disable-lock-screen true
+
+# Enable desktop icons
+gnome-extensions enable ding@rastersoft.com
+
+# ctrl-alt-t -> open terminal
+dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command "'gnome-terminal'"
+dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding "'<Primary><Alt>t'"
+dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name "'gnome-terminal'"
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
+
+# Misc
+gsettings set org.gnome.desktop.interface clock-format 24h
+gsettings set org.gnome.desktop.wm.preferences button-layout appmenu:minimize,maximize,close
+gsettings set org.gnome.desktop.wm.preferences audible-bell false
+EOF
 "#
     );
 
