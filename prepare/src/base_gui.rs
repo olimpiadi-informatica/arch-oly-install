@@ -1,7 +1,73 @@
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{Ok, Result, bail};
 
 use crate::args::Args;
-use crate::util::script;
+use crate::util::{iso_root, script};
+
+pub fn backgrounds(args: &Args) -> Result<()> {
+    let Args {
+        backgrounds,
+        default_background,
+        orga_account,
+        contestant_account,
+        ..
+    } = args;
+    if !*backgrounds {
+        return Ok(());
+    }
+    let Some(default_background) = default_background else {
+        bail!("missing default background")
+    };
+
+    let bg_install = iso_root().join("install/default_background.png");
+    std::fs::copy(default_background, bg_install)?;
+
+    script!(
+        "86-backgrounds",
+        r#"
+pacman -S --noconfirm wget
+mkdir -p /opt/background
+chmod ugo+rwX /opt/background
+chown {orga_account}:{orga_account} /opt/background
+cp -v /install/default_background.png /opt/background
+
+cat > /etc/systemd/system/get-background.service << EOF
+[Unit]
+Description=get background
+Requires=wait-hostname.service
+After=wait-hostname.service
+Before=gdm.service
+
+[Service]
+User={orga_account}
+Group={orga_account}
+Type=oneshot
+WorkingDirectory=/opt/background
+ExecStart=/usr/local/bin/get_background.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /usr/local/bin/get_background.sh << EOF
+#!/bin/bash
+cp -v default_background.png background.png
+wget http://backgrounds.olympiads-server/\$(hostnamectl hostname)/background.png -O correct_background.png
+mv correct_background.png background.png
+EOF
+
+chmod +x /usr/local/bin/get_background.sh
+
+sudo -u {contestant_account} -g {contestant_account} dbus-launch bash << EOF
+gsettings set org.gnome.desktop.background picture-uri 'file:///opt/background/background.png'
+gsettings set org.gnome.desktop.background picture-uri-dark 'file:///opt/background/background.png'
+EOF
+
+systemctl enable get-background.service
+"#
+    );
+
+    Ok(())
+}
 
 pub fn base_gui_setup(args: &Args) -> Result<()> {
     let Args {
@@ -42,10 +108,11 @@ gsettings set org.gnome.mutter dynamic-workspaces false
 gsettings set org.gnome.desktop.wm.preferences num-workspaces 4
 
 # Power settings
+gsettings set org.gnome.desktop.session idle-delay 0
+gsettings set org.gnome.desktop.lockdown disable-lock-screen true
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type nothing
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
 gsettings set org.gnome.settings-daemon.plugins.power power-button-action nothing
-gsettings set org.gnome.desktop.lockdown disable-lock-screen true
 
 # Enable desktop icons
 gnome-extensions enable ding@rastersoft.com

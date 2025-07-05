@@ -3,4 +3,5 @@ out
 archiso-profile/airootfs/pre_install
 archiso-profile/airootfs/install/additional_user_files
 archiso-profile/airootfs/install/scripts
+archiso-profile/airootfs/install/default_background.png
 prepare/target

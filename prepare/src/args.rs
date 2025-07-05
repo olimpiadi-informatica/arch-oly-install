@@ -32,6 +32,9 @@ pub struct Args {
     #[clap(long, value_parser)]
     pub additional_user_files: Vec<PathBuf>,
 
+    #[clap(long, value_parser)]
+    pub additional_server_names: Vec<String>,
+
     #[clap(long)]
     pub nowait: bool,
 
@@ -47,4 +50,25 @@ pub struct Args {
 
     #[clap(long, default_value_t = false)]
     pub codeblocks: bool,
+
+    #[clap(long, default_value = "10.0.0.1")]
+    pub server_ip: String,
+
+    #[clap(long, default_value_t = false)]
+    pub pixie: bool,
+
+    #[clap(long, default_value_t = false)]
+    pub node_exporter: bool,
+
+    #[clap(long, default_value_t = false)]
+    pub no_lockdown: bool,
+
+    #[clap(long, default_value = "172.26.0.0/16")]
+    pub orga_net: String,
+
+    #[clap(long, default_value_t = false)]
+    pub backgrounds: bool,
+
+    #[clap(long)]
+    pub default_background: Option<PathBuf>,
 }

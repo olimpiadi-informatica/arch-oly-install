@@ -58,7 +58,7 @@ done"#
     if let Some(pin_packages) = pin_packages {
         script!(
             pre "30-fix-mirrors",
-            r#"echo 'Server=https://archive.archlinux.org/repos/{pin_packages}/$repo/os/$arch' > /etc/pacman.d/mirrorlist"#
+            r#"echo 'Server=https://europe.archive.pkgbuild.com/repos/{pin_packages}/$repo/os/$arch' > /etc/pacman.d/mirrorlist"#
         );
     } else {
         script!(
