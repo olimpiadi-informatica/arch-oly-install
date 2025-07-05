@@ -48,7 +48,7 @@ pub fn setup_users(args: &Args) -> Result<()> {
     script!(
         "70-sshd",
         r#"
-pacman -S --noconfirm openssh
+pacman -S --noconfirm openssh rsync
 systemctl enable sshd
 gen_authorized_keys() {{
     {gen_authorized_keys}
