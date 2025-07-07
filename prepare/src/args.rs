@@ -71,4 +71,7 @@ pub struct Args {
 
     #[clap(long)]
     pub default_background: Option<PathBuf>,
+
+    #[clap(long, value_parser)]
+    pub keyboard_layout: Vec<String>,
 }

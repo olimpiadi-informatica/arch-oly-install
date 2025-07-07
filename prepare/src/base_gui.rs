@@ -74,6 +74,7 @@ pub fn base_gui_setup(args: &Args) -> Result<()> {
         contestant_account,
         virtualbox,
         disable_wayland,
+        keyboard_layout,
         ..
     } = args;
 
@@ -130,6 +131,18 @@ gsettings set org.gnome.desktop.wm.preferences audible-bell false
 EOF
 "#
     );
+
+    if !keyboard_layout.is_empty() {
+        let kb: Vec<_> = keyboard_layout
+            .iter()
+            .map(|x| format!("('xkb', '{x}')"))
+            .collect();
+        let kb = kb.join(",");
+        script!(
+            "86-gnome-keyboard",
+            "sudo -u {contestant_account} -g {contestant_account} dbus-launch gsettings set org.gnome.desktop.input-sources sources \"[{kb}]\""
+        );
+    }
 
     script!(
         "87-disable-keyring",
