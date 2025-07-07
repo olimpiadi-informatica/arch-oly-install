@@ -74,4 +74,7 @@ pub struct Args {
 
     #[clap(long, value_parser)]
     pub keyboard_layout: Vec<String>,
+
+    #[clap(long, value_parser)]
+    pub ca_certificate: Vec<PathBuf>,
 }

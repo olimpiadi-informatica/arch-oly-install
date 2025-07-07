@@ -1,8 +1,10 @@
+use std::fs::create_dir_all;
+
 use color_eyre::eyre::Result;
 
 use crate::{
     args::Args,
-    util::{ensure_paru, script},
+    util::{ensure_paru, iso_root, script},
 };
 
 pub fn compilers() -> Result<()> {
@@ -22,6 +24,7 @@ pub fn browser(args: &Args) -> Result<()> {
     let Args {
         homepage,
         contestant_account,
+        ca_certificate,
         ..
     } = args;
     let set_homepage = if let Some(home) = homepage {
@@ -50,6 +53,26 @@ EOF
 sudo -u {contestant_account} cp /usr/share/applications/firefox.desktop ~{contestant_account}/Desktop
 "#
     );
+
+    if !ca_certificate.is_empty() {
+        let file_dir = iso_root().join("install/ca-certificates");
+        create_dir_all(&file_dir)?;
+
+        for f in ca_certificate.iter() {
+            std::fs::copy(f, file_dir.join(f.file_name().unwrap()))?;
+        }
+
+        script!(
+            "87-ca-certificates",
+            r#"
+for cert in /install/ca-certificates/*
+do
+    trust anchor $cert
+done
+update-ca-trust
+"#
+        );
+    }
 
     Ok(())
 }
