@@ -95,6 +95,74 @@ pub fn editors(args: &Args) -> Result<()> {
             "86-pycharm",
             r#"
 pacman -S --noconfirm pycharm-community-edition
+cd ~{contestant_account}
+sudo -u {contestant_account} bash << AS_CONTESTANT
+set -xe
+mkdir -p .config/JetBrains/PyCharmCE2025.1/options/
+cat > .config/JetBrains/PyCharmCE2025.1/options/other.xml << EOF
+<application>
+  <component name="LangManager">
+    <option name="languageName" value="Python" />
+  </component>
+  <component name="NotRoamableUiSettings">
+    <option name="presentationModeIdeScale" value="1.75" />
+  </component>
+  <component name="PropertyService"><![CDATA[{{
+  "keyToString": {{
+    "PyCharm.InitialConfiguration": "true",
+    "PyCharm.InitialConfiguration.V2": "true",
+    "PyCharm.InitialConfiguration.V3": "true",
+    "PyCharm.InitialConfiguration.V4": "true",
+    "PyCharm.InitialConfiguration.V5": "true",
+    "PyCharm.InitialConfiguration.V6": "true",
+    "PyCharm.InitialConfiguration.V7": "true",
+    "PyCharm.InitialConfiguration.V8": "true",
+    "ask.about.ctrl.y.shortcut.v2": "true",
+    "experimental.ui.on.first.startup": "true",
+    "experimental.ui.used.version": "251.26094.141",
+    "experimentalFeature.terminal.shell.command.handling": "false",
+    "fileTypeChangedCounter": "2",
+    "fontSizeToResetConsole": "13.0",
+    "fontSizeToResetEditor": "13.0",
+    "ift.hide.welcome.screen.promo": "true",
+    "ignore.ide.script.launcher.used": "true",
+    "input.method.disabler.muted": "true",
+    "previousColorScheme": "_@user_Dark",
+    "registry.to.advanced.settings.migration.build": "PC-251.26094.141",
+    "terminal.gen.one.option.visible": "false",
+    "whats.new.last.shown.version": "9999-1.2-26094-6f065183c835868e278363490753d1b84b4aeb30"
+  }},
+  "keyToStringList": {{
+    "fileTypeDetectors": [
+      "com.intellij.ide.scratch.ScratchFileServiceImpl\\\$Detector",
+      "org.jetbrains.plugins.textmate.TextMateFileType\\\$TextMateFileDetector"
+    ]
+  }}
+}}]]></component>
+</application>
+EOF
+
+cat > .config/JetBrains/PyCharmCE2025.1/options/actionSummary.xml << EOF
+<application>
+  <component name="ActionsLocalSummary">
+    <e n="com.intellij.ide.startup.importSettings.chooser.productChooser.SkipImportAction">
+      <i c="1" l="1752005559715" />
+    </e>
+  </component>
+</application>
+EOF
+
+JAVA_PREF_DIR=.java/.userPrefs/jetbrains/_\!\(\!\!cg\"p\!\(\}}\!\}}@\"j\!\(k\!\|w\"w\!\'8\!b\!\"p\!\'\:\!e@\=\=/
+mkdir -p \$JAVA_PREF_DIR
+cat > \$JAVA_PREF_DIR/prefs.xml << EOF
+<!DOCTYPE map SYSTEM "http://java.sun.com/dtd/preferences.dtd">
+<map MAP_XML_VERSION="1.0">
+  <entry key="euacommunity_accepted_version" value="1.0"/>
+</map>
+EOF
+mkdir -p .local/share/JetBrains/consentOptions/
+echo -n "rsch.send.usage.stat:1.1:0:1752009309526" > .local/share/JetBrains/consentOptions/accepted
+AS_CONTESTANT
 "#
         );
     }
@@ -108,15 +176,19 @@ pacman -S --noconfirm pycharm-community-edition
         r#"
 pacman -S --noconfirm sqlite3
 sudo -u paruuser paru -S --noconfirm visual-studio-code-bin
-sudo -u {contestant_account} code --install-extension ms-python.python
-sudo -u {contestant_account} code --install-extension ms-vscode.cpptools
-sudo -u {contestant_account} code --install-extension vscodevim.vim
-sudo -u {contestant_account} mkdir -p ~{contestant_account}/.config/Code/User/globalStorage/
-sudo -u {contestant_account} sqlite3 ~{contestant_account}/.config/Code/User/globalStorage/state.vscdb << EOF
+sudo -u {contestant_account} bash << EOF
+set -xe
+code --install-extension ms-python.python
+code --install-extension ms-vscode.cpptools
+code --install-extension vscodevim.vim
+mkdir -p ~{contestant_account}/.config/Code/User/globalStorage/
+sqlite3 ~{contestant_account}/.config/Code/User/globalStorage/state.vscdb << SQLITE
 CREATE TABLE IF NOT EXISTS ItemTable (key TEXT UNIQUE ON CONFLICT REPLACE, value BLOB);
 INSERT INTO ItemTable VALUES('extensionsIdentifiers/disabled', '[{{"id":"vscodevim.vim","uuid":"d96e79c6-8b25-4be3-8545-0e0ecefcae03"}}]');
+SQLITE
+echo '{{"workbench.startupEditor": "none"}}' > ~{contestant_account}/.config/Code/User/settings.json
+cp /usr/share/applications/code.desktop ~{contestant_account}/Desktop
 EOF
-sudo -u {contestant_account} cp /usr/share/applications/code.desktop ~{contestant_account}/Desktop
 "#
     );
     script!(
