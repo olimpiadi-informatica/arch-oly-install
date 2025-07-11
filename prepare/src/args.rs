@@ -77,4 +77,7 @@ pub struct Args {
 
     #[clap(long, value_parser)]
     pub ca_certificate: Vec<PathBuf>,
+
+    #[clap(long)]
+    pub firefox_policies: Option<PathBuf>,
 }

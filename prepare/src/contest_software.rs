@@ -25,6 +25,7 @@ pub fn browser(args: &Args) -> Result<()> {
         homepage,
         contestant_account,
         ca_certificate,
+        firefox_policies,
         ..
     } = args;
     let set_homepage = if let Some(home) = homepage {
@@ -53,6 +54,18 @@ EOF
 sudo -u {contestant_account} cp /usr/share/applications/firefox.desktop ~{contestant_account}/Desktop
 "#
     );
+    if let Some(policies) = firefox_policies {
+        let policies = std::fs::read_to_string(policies)?;
+        script!(
+            "87-browser-policies",
+            r#"
+mkdir -p /etc/firefox/policies
+cat > /etc/firefox/policies/policies.json << EOF
+{policies}
+EOF
+"#
+        );
+    }
 
     if !ca_certificate.is_empty() {
         let file_dir = iso_root().join("install/ca-certificates");
