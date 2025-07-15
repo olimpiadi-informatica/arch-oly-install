@@ -188,7 +188,7 @@ AS_CONTESTANT
         "86-vscode",
         r#"
 pacman -S --noconfirm sqlite3
-sudo -u paruuser paru -S --noconfirm visual-studio-code-bin
+sudo -u paruuser paru -S --noconfirm visual-studio-code-bin ttf-droid
 sudo -u {contestant_account} bash << EOF
 set -xe
 code --install-extension ms-python.python
