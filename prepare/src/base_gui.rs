@@ -50,8 +50,9 @@ EOF
 
 cat > /usr/local/bin/get_background.sh << EOF
 #!/bin/bash
-cp -v default_background.png background.png
-wget http://backgrounds.olympiads-server/\$(hostnamectl hostname)/background.png -O correct_background.png
+set -xe
+cp default_background.png background.png
+wget http://backgrounds.olympiads-server/$(hostnamectl hostname)/background.png -O correct_background.png
 mv correct_background.png background.png
 EOF
 
