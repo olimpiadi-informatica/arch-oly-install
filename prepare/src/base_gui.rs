@@ -76,6 +76,7 @@ pub fn base_gui_setup(args: &Args) -> Result<()> {
         virtualbox,
         disable_wayland,
         keyboard_layout,
+        gnome_locale,
         ..
     } = args;
 
@@ -132,6 +133,13 @@ gsettings set org.gnome.desktop.wm.preferences audible-bell false
 EOF
 "#
     );
+
+    if let Some(gnome_locale) = gnome_locale {
+        script!(
+            "86-gnome-locale",
+            r#"echo -e "[User]\nLanguage={gnome_locale}.UTF-8;\n" > /var/lib/AccountsService/users/{contestant_account}"#
+        );
+    }
 
     if !keyboard_layout.is_empty() {
         let kb: Vec<_> = keyboard_layout

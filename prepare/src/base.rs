@@ -7,6 +7,7 @@ pub fn base_setup(args: &Args) -> Result<()> {
     let Args {
         timezone,
         locale,
+        gnome_locale,
         server_ip,
         pixie,
         node_exporter,
@@ -115,10 +116,16 @@ systemctl enable prometheus-node-exporter
         "ln -sf /usr/share/zoneinfo/{timezone} /etc/localtime\nhwclock --systohc"
     );
 
+    let gnome_locale = gnome_locale
+        .as_deref()
+        .map(|s| format!(r#"echo "{s}.UTF-8 UTF-8" >> /etc/locale.gen"#))
+        .unwrap_or_default();
+
     script!(
         "00-locale",
         r#"
 echo "{locale}.UTF-8 UTF-8" > /etc/locale.gen
+{gnome_locale}
 locale-gen
 echo LANG={locale}.UTF-8 > /etc/locale.conf"#
     );

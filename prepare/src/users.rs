@@ -32,13 +32,13 @@ pub fn setup_users(args: &Args) -> Result<()> {
         contestant_account,
         orga_account,
         password,
-        github,
+        ssh_github,
         ssh,
         ..
     } = args;
 
     let mut gen_authorized_keys = String::new();
-    for gh in github.iter() {
+    for gh in ssh_github.iter() {
         gen_authorized_keys = format!("{gen_authorized_keys}\ncurl https://github.com/{gh}.keys");
     }
     for key in ssh.iter() {
