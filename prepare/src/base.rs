@@ -164,7 +164,13 @@ echo -e "[Time]\nNTP=olympiads-server\nRootDistanceMaxSec=30" > /etc/systemd/tim
         r#"
 systemctl enable systemd-resolved
 umount /etc/resolv.conf
-ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+mkdir -p /etc/systemd/resolved.conf.d/
+cat > /etc/systemd/resolved.conf.d/disable_stub.conf << EOF
+[Resolve]
+DNSStubListener=no
+EOF
+ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+sed -i "s/^hosts:.*/hosts: mymachines files myhostname dns/g" /etc/nsswitch.conf
 "#
     );
     script!("99-clean-cache", "yes | pacman -Scc");
