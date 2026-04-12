@@ -13,6 +13,7 @@ pub fn base_setup(args: &Args) -> Result<()> {
         node_exporter,
         orga_account,
         additional_server_names,
+        keyboard_layout,
         ..
     } = args;
 
@@ -130,6 +131,17 @@ locale-gen
 echo LANG={locale}.UTF-8 > /etc/locale.conf"#
     );
 
+    {
+        let keyboard_layout = keyboard_layout
+            .first()
+            .map(|x| -> &str { x })
+            .unwrap_or("us");
+        script!(
+            "00-vconsole",
+            r#"echo KEYMAP={keyboard_layout} > /etc/vconsole.conf"#
+        );
+    }
+
     script!(
         "00-misc",
         "pacman -S --noconfirm less bash-completion screen tmux nano"
@@ -173,7 +185,7 @@ ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
 sed -i "s/^hosts:.*/hosts: mymachines files myhostname dns/g" /etc/nsswitch.conf
 "#
     );
-    script!("99-clean-cache", "yes | pacman -Scc");
+    script!("99-clean-cache", "yes | pacman -Scc || true");
 
     Ok(())
 }
