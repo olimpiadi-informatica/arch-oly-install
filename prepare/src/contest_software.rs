@@ -92,7 +92,9 @@ update-ca-trust
 
 pub fn editors(args: &Args) -> Result<()> {
     let Args {
+        pycharm_ce,
         pycharm,
+        clion,
         codeblocks,
         contestant_account,
         ..
@@ -104,8 +106,16 @@ pub fn editors(args: &Args) -> Result<()> {
     );
 
     if *pycharm {
+        script!("86-pycharm", r#"paru -S pycharm"#);
+    }
+
+    if *clion {
+        script!("86-clion", r#"paru -S clion clion-jre"#);
+    }
+
+    if *pycharm_ce {
         script!(
-            "86-pycharm",
+            "86-pycharm-ce",
             r#"
 pacman -S --noconfirm pycharm-community-edition
 cd ~{contestant_account}
