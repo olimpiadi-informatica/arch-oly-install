@@ -144,7 +144,7 @@ echo LANG={locale}.UTF-8 > /etc/locale.conf"#
 
     script!(
         "00-misc",
-        "pacman -S --noconfirm less bash-completion screen tmux nano"
+        "pacman -S --noconfirm less bash-completion screen tmux nano bc"
     );
 
     script!("97-mkinitcpio", "mkinitcpio -P linux");
