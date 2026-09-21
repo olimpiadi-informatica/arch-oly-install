@@ -151,6 +151,18 @@ echo LANG={locale}.UTF-8 > /etc/locale.conf"#
         "pacman -S --noconfirm less bash-completion screen tmux nano bc"
     );
 
+    script!(
+        "96-mkinitcpio-config",
+        r#"
+cat > /etc/mkinitcpio.d/linux.preset << EOF
+PRESETS=('default')
+ALL_config="/etc/mkinitcpio.conf"
+ALL_kver="/boot/vmlinuz-linux"
+default_image="/boot/initramfs-linux.img"
+default_options="-S autodetect"
+EOF
+"#
+    );
     script!("97-mkinitcpio", "mkinitcpio -P linux");
     script!(
         "98-grub",
