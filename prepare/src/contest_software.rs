@@ -100,9 +100,11 @@ pub fn editors(args: &Args) -> Result<()> {
         ..
     } = args;
     ensure_paru()?;
+
+    // geany requires xterm, see https://github.com/olimpiadi-informatica/arch-oly-install/issues/3
     script!(
         "86-editors",
-        "pacman -S --noconfirm emacs geany gedit gvim neovim kate kdevelop nano"
+        "pacman -S --noconfirm emacs geany gedit gvim neovim kate kdevelop nano xterm"
     );
 
     if *pycharm {
