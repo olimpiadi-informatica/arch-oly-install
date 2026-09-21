@@ -92,6 +92,7 @@ update-ca-trust
 
 pub fn editors(args: &Args) -> Result<()> {
     let Args {
+        eclipse,
         pycharm_ce,
         pycharm,
         clion,
@@ -216,9 +217,13 @@ cp /usr/share/applications/code.desktop ~{contestant_account}/Desktop
 EOF
 "#
     );
-    script!(
-        "86-eclipse",
-        "sudo -u paruuser paru -S --noconfirm eclipse-cpp-bin"
-    );
+
+    if *eclipse {
+        script!(
+            "86-eclipse",
+            "sudo -u paruuser paru -S --noconfirm eclipse-cpp-bin"
+        );
+    }
+
     Ok(())
 }

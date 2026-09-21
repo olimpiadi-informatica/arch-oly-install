@@ -59,6 +59,10 @@ pub struct Args {
     #[clap(long)]
     pub homepage: Option<String>,
 
+    /// Install Eclipse
+    #[clap(long, default_value_t = false)]
+    pub eclipse: bool,
+
     /// Install PyCharm CE
     #[clap(long, default_value_t = false)]
     pub pycharm_ce: bool,
