@@ -137,7 +137,7 @@ EOF
     if let Some(gnome_locale) = gnome_locale {
         script!(
             "86-gnome-locale",
-            r#"echo -e "[User]\nLanguage={gnome_locale}.UTF-8;\n" > /var/lib/AccountsService/users/{contestant_account}"#
+            r#"echo -e "[User]\nLanguage={gnome_locale}.UTF-8\n" > /var/lib/AccountsService/users/{contestant_account}"#
         );
     }
 
