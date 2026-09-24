@@ -10,7 +10,7 @@ use crate::{
 pub fn compilers() -> Result<()> {
     script!(
         "86-compilers",
-        "pacman -S --noconfirm base-devel pypy pypy3 python clang"
+        "pacman -S --noconfirm base-devel pypy3 python clang"
     );
     Ok(())
 }
