@@ -97,10 +97,18 @@ echo -e "[Login]\nHandleLidSwitch=ignore\nHandlePowerKey=ignore" >> /etc/systemd
     script!(
         "85-gnome",
         r#"
-pacman -S --noconfirm gnome gdm gnome-terminal gnome-shell-extension-desktop-icons-ng
+pacman -S --noconfirm gnome gdm gnome-terminal gnome-shell-extension-desktop-icons-ng gnome-shell-extensions
 pacman -R --noconfirm gnome-tour
 systemctl enable gdm
 echo -e "[daemon]\nAutomaticLoginEnable=True\nAutomaticLogin={contestant_account}{gdm_wayland}" > /etc/gdm/custom.conf
+
+mkdir -p /etc/wireplumber/wireplumber.conf.d
+cat > /etc/wireplumber/wireplumber.conf.d/50-default-volume.conf << EOF
+wireplumber.settings = {{
+  device.routes.default-sink-volume = 0.0
+}}
+EOF
+
 sudo -u {contestant_account} -g {contestant_account} dbus-launch bash << EOF
 set -xe
 
@@ -117,13 +125,14 @@ gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type not
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
 gsettings set org.gnome.settings-daemon.plugins.power power-button-action nothing
 
-# Enable desktop icons
+# Enable extensions
 gnome-extensions enable ding@rastersoft.com
+gnome-extensions enable apps-menu@gnome-shell-extensions.gcampax.github.com
 
 # ctrl-alt-t -> open terminal
-dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command "'gnome-terminal'"
+dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command "'kgx'"
 dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding "'<Primary><Alt>t'"
-dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name "'gnome-terminal'"
+dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name "'kgx'"
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
 
 # Misc

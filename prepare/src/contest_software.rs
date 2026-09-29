@@ -16,7 +16,10 @@ pub fn compilers() -> Result<()> {
 }
 
 pub fn debuggers() -> Result<()> {
-    script!("86-debuggers", "pacman -S --noconfirm gdb valgrind perf");
+    script!(
+        "86-debuggers",
+        "pacman -S --noconfirm gdb valgrind perf kcachegrind graphviz lldb"
+    );
     Ok(())
 }
 
@@ -97,6 +100,7 @@ pub fn editors(args: &Args) -> Result<()> {
         pycharm,
         clion,
         codeblocks,
+        zed,
         contestant_account,
         ..
     } = args;
@@ -223,6 +227,10 @@ EOF
             "86-eclipse",
             "sudo -u paruuser paru -S --noconfirm eclipse-cpp-bin"
         );
+    }
+
+    if *zed {
+        script!("86-zed", "pacman -S --noconfirm zed");
     }
 
     Ok(())
