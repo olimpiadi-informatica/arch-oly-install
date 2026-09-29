@@ -79,6 +79,10 @@ pub struct Args {
     #[clap(long, default_value_t = false)]
     pub codeblocks: bool,
 
+    /// Install Zed
+    #[clap(long, default_value_t = false)]
+    pub zed: bool,
+
     /// The server IP address
     #[clap(long, default_value = "10.0.0.1")]
     pub server_ip: IpAddr,

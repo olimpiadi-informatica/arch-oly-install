@@ -144,7 +144,16 @@ echo LANG={locale}.UTF-8 > /etc/locale.conf"#
 
     script!(
         "00-misc",
-        "pacman -S --noconfirm less bash-completion screen tmux nano bc htop man man-db man-pages"
+        "pacman -S --noconfirm less bash-completion screen tmux bc htop man man-db man-pages"
+    );
+
+    script!(
+        "00-nano",
+        r#"
+pacman -S --noconfirm nano
+echo 'include "/usr/share/nano/*.nanorc"' >> /etc/nanorc
+echo 'include "/usr/share/nano/extra/*.nanorc"' >> /etc/nanorc
+"#
     );
 
     script!(
