@@ -17,10 +17,6 @@ pub fn base_setup(args: &Args) -> Result<()> {
         ..
     } = args;
 
-    script!("00-software-utils", "pacman -S --noconfirm htop");
-
-    script!("00-man", "pacman -S --noconfirm man man-db man-pages");
-
     if *pixie {
         script!(
             "00-pixie-ping",
@@ -148,7 +144,7 @@ echo LANG={locale}.UTF-8 > /etc/locale.conf"#
 
     script!(
         "00-misc",
-        "pacman -S --noconfirm less bash-completion screen tmux nano bc"
+        "pacman -S --noconfirm less bash-completion screen tmux nano bc htop man man-db man-pages"
     );
 
     script!(
