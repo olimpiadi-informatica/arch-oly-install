@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS ItemTable (key TEXT UNIQUE ON CONFLICT REPLACE, value
 INSERT INTO ItemTable VALUES('extensionsIdentifiers/disabled', '[{{"id":"vscodevim.vim","uuid":"d96e79c6-8b25-4be3-8545-0e0ecefcae03"}}]');
 SQLITE
 echo '{{"workbench.startupEditor": "none"}}' > ~{contestant_account}/.config/Code/User/settings.json
-cp /usr/share/applications/code.desktop ~{contestant_account}/Desktop
+cp /usr/share/applications/com.microsoft.VSCode.desktop ~{contestant_account}/Desktop
 EOF
 "#
     );
