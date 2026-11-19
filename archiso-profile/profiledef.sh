@@ -6,7 +6,7 @@ iso_label="ARCH_OLY_INSTALL_$(git rev-parse --short HEAD)"
 iso_publisher="Olimpiadi Italiane di Informatica <https://olinfo.it>"
 iso_application="Arch Linux installer for Olympiads"
 iso_version="$(git rev-parse --short HEAD)"
-install_dir="arch-oly"
+install_dir="archoly"
 buildmodes=('iso')
 bootmodes=('bios.syslinux.mbr' 'bios.syslinux.eltorito'
            'uefi-x64.grub.esp' 'uefi-x64.grub.eltorito')
