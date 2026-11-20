@@ -173,7 +173,11 @@ EOF
         "98-grub",
         r#"
 pacman -S --noconfirm grub efibootmgr
-grub-install --target=x86_64-efi --efi-directory=/boot
+for bootnum in $(efibootmgr | sed -En 's/^Boot([0-9A-F]{{4}})\*? arch\b.*/\1/p'); do
+    efibootmgr -b "$bootnum" -B || true
+done
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch --recheck
+grub-install --target=x86_64-efi --efi-directory=/boot --removable
 grub-mkconfig -o /boot/grub/grub.cfg
 "#
     );
