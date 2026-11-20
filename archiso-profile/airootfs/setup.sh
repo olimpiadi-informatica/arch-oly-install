@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if grep -qw 'archoly\.noinstall' /proc/cmdline; then
+  echo "archoly.noinstall set; starting normal live shell (run /do_setup.sh to install manually)."
+  exec bash -l
+fi
+
 if [ -f /setup_already_attempted ]
 then
   echo "Setup script restarted? Starting recovery shell"
